@@ -1,4 +1,4 @@
-name: paschen-1d-1.0.0
+name: paschen-1d-1.0.1
 channels:
   - conda-forge
 dependencies:

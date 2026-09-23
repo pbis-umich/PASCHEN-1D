@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.0.1 — 2026-09-23
+
+- Corrected the physical diffusion face gradient in the finite-volume
+  continuity operator. Version 1.0.0 subtracted two slope-limited
+  Kurganov-Tadmor reconstructions at the same face; version 1.0.1 differences
+  adjacent cell-centered densities while leaving the advective reconstruction
+  unchanged.
+- Added manufactured-solution regression coverage for the public NumPy,
+  low-allocation NumPy, Numba serial, and Numba parallel operator paths.
+- Results and checkpoints produced by version 1.0.0 remain part of the
+  historical numerical lineage and should not be relabeled as corrected
+  version 1.0.1 output.
+
 ## 1.0.0 — 2026-07-21
 
 - Added strict manifest-backed BOLSIG+ electron transport for 42 neutral gases.

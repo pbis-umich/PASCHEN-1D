@@ -77,7 +77,7 @@ class SolverReleaseTests(unittest.TestCase):
             )
             state = run_quietly(cfg)
             ctx = load_run_context("reader_round_trip", project_dir=directory)
-            self.assertEqual(ctx.meta["software"]["version"], "1.0.0")
+            self.assertEqual(ctx.meta["software"]["version"], "1.0.1")
             electron_provenance = ctx.meta["transport_sources"][
                 "electron_table_provenance"
             ]
