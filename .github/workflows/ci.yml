@@ -21,8 +21,8 @@ jobs:
       - run: python tools/build_electron_manifest.py --check
       - run: python tools/audit_swarm_data.py
       - run: python tools/build_release_archive.py
-      - run: tar -tzf dist/PASCHEN-1D-1.0.0.tar.gz | grep 'electron_swarm_data/manifest.json'
-      - run: tar -tzf dist/PASCHEN-1D-1.0.0.tar.gz | grep 'ion_swarm_data/normalized_lxcat_2026-07-21/manifest.json'
+      - run: tar -tzf dist/PASCHEN-1D-1.1.0.tar.gz | grep 'electron_swarm_data/manifest.json'
+      - run: tar -tzf dist/PASCHEN-1D-1.1.0.tar.gz | grep 'ion_swarm_data/normalized_lxcat_2026-07-21/manifest.json'
       - run: python tools/build_release_wheel.py
-      - run: unzip -l dist/paschen_1d-1.0.0-py3-none-any.whl | grep 'electron_swarm_data/manifest.json'
-      - run: unzip -l dist/paschen_1d-1.0.0-py3-none-any.whl | grep 'ion_swarm_data/normalized_lxcat_2026-07-21/manifest.json'
+      - run: unzip -l dist/paschen_1d-1.1.0-py3-none-any.whl | grep 'electron_swarm_data/manifest.json'
+      - run: unzip -l dist/paschen_1d-1.1.0-py3-none-any.whl | grep 'ion_swarm_data/normalized_lxcat_2026-07-21/manifest.json'

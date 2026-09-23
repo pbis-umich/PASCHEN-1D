@@ -1,4 +1,4 @@
-# Exact environment used for the PASCHEN-1D 1.0.0 release verification.
+# Exact environment used for the PASCHEN-1D 1.1.0 release verification.
 numpy==2.4.4
 scipy==1.17.1
 matplotlib==3.10.8

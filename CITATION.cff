@@ -1,8 +1,8 @@
 cff-version: 1.2.0
 message: "If you use PASCHEN-1D, please cite this software."
 title: "PASCHEN-1D: A one-dimensional fluid plasma solver with multi-mechanism surface emission and flexible external circuit coupling"
-version: 1.0.0
-date-released: 2026-07-21
+version: 1.1.0
+date-released: 2026-09-23
 type: software
 license: CC-BY-NC-4.0
 authors:

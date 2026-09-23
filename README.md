@@ -1,6 +1,10 @@
 # PASCHEN-1D
 
-Current release: **1.0.0 (2026-07-21)**.
+Current release: **1.1.0 (2026-09-23)**.
+
+Version 1.1.0 adds diffusion-aware adaptive substepping and local-field Vaughan
+secondary-emission support, and includes the corrected physical diffusion face
+gradient first issued on the maintenance line in version 1.0.1.
 
 PASCHEN-1D is a one-dimensional drift-diffusion-Poisson plasma solver with
 surface-emission physics and external-circuit coupling. It is intended for
