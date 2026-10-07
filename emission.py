@@ -1102,14 +1102,14 @@ def build_emission_model(cfg: SimulationConfig) -> Optional[EmissionModel]:
 
         # 2) FN component.
         if getattr(emission_cfg, f"{prefix}_enable_fn_emission", False):
-            work_function_eV = float(
+            fn_work_function_eV = float(
                 _resolve_electrode_param(
                     electrode,
                     "fn_work_function_eV",
                     4.5,
                 )
             )
-            field_scale = float(
+            fn_field_scale = float(
                 _resolve_electrode_param(
                     electrode,
                     "fn_field_scale_factor",
@@ -1125,21 +1125,21 @@ def build_emission_model(cfg: SimulationConfig) -> Optional[EmissionModel]:
             ) -> float:
                 if E_surface is None:
                     raise ValueError(f"FN emission requires E_surface at {electrode}.")
-                E_eff = field_scale * float(E_surface)
-                return fowler_nordheim_J(E_eff, work_function_eV=work_function_eV)
+                E_eff = fn_field_scale * float(E_surface)
+                return fowler_nordheim_J(E_eff, work_function_eV=fn_work_function_eV)
 
             emitters.append(emitter_fn)
 
         # 3) MG component.
         if getattr(emission_cfg, f"{prefix}_enable_mg_emission", False):
-            work_function_eV = float(
+            mg_work_function_eV = float(
                 _resolve_electrode_param(
                     electrode,
                     "mg_work_function_eV",
                     4.5,
                 )
             )
-            field_scale = float(
+            mg_field_scale = float(
                 _resolve_electrode_param(
                     electrode,
                     "mg_field_scale_factor",
@@ -1169,10 +1169,10 @@ def build_emission_model(cfg: SimulationConfig) -> Optional[EmissionModel]:
             ) -> float:
                 if E_surface is None:
                     raise ValueError(f"MG emission requires E_surface at {electrode}.")
-                E_eff = field_scale * float(E_surface)
+                E_eff = mg_field_scale * float(E_surface)
                 return murphy_good_cold_J(
                     E=E_eff,
-                    work_function_eV=work_function_eV,
+                    work_function_eV=mg_work_function_eV,
                     f_clip_min=f_clip_min,
                     f_clip_max=f_clip_max,
                 )
@@ -1195,7 +1195,7 @@ def build_emission_model(cfg: SimulationConfig) -> Optional[EmissionModel]:
                     300.0,
                 )
             )
-            work_function_eV = float(
+            rd_work_function_eV = float(
                 _resolve_electrode_param(
                     electrode,
                     "rd_work_function_eV",
@@ -1211,7 +1211,7 @@ def build_emission_model(cfg: SimulationConfig) -> Optional[EmissionModel]:
             ) -> float:
                 return richardson_dushman_J(
                     T_K=T_cath,
-                    work_function_eV=work_function_eV,
+                    work_function_eV=rd_work_function_eV,
                     A_R=A_R,
                 )
 
