@@ -18,8 +18,9 @@ Supported external emission components (enabled via SimulationConfig booleans):
     - "constant_J"
         → Time-windowed constant current density:
             J_emit = emission_J_const [A/m²]
-          for emission_t_start <= t <= emission_t_end (or always-on if
-          emission_t_end <= emission_t_start).
+          for emission_t_start <= t <= emission_t_end (or open-ended after
+          emission_t_start if emission_t_end <= emission_t_start).
+          With a positive timestep, returns the average over [t, t + dt].
 
     - "fn"
         → Fowler–Nordheim field emission:
@@ -131,8 +132,9 @@ class EmissionModel:
             - Ignored by models that depend only on time or temperature.
         dt : float
             Simulation time step [s].
-            - Used by models that average J over [t, t + dt] (e.g. quantum pulse).
-            - Ignored by purely instantaneous models (constant_J, FN, MG, RD).
+            - Used by constant_J and quantum pulse models to average J over
+              [t, t + dt].
+            - Ignored by purely instantaneous models (FN, MG, RD).
         E_surface : float or None, optional
             Local electric field at the emitting surface [V/m].
             Used by FN emission in the current implementation.
@@ -202,12 +204,12 @@ def make_constant_J_emitter(
     J_const: float,
     t_start: float = 0.0,
     t_end: Optional[float] = None,
-) -> Callable[[float, float, float, Optional[float]], float]:
+) -> Callable[[float, float, Optional[float], Optional[float]], float]:
     """
     Build a simple emitter that returns a constant J_const [A/m²]
     over a user-specified time window.
 
-    Behavior:
+    Instantaneous behavior when dt_run is absent or nonpositive:
         J_emit(t) = J_const     for t_start <= t <= t_end
                   = 0           otherwise
 
@@ -231,17 +233,27 @@ def make_constant_J_emitter(
 
     Notes
     -----
-    - The active window is inclusive at both ends:
+    - Instantaneous sampling is inclusive at both ends:
           t_start <= t <= t_end.
-    - `V_gap` and `dt_run` are accepted for interface consistency but are
-      not used by this emitter.
+    - For dt_run > 0, return J_const times the overlap duration of
+      [t_run, t_run + dt_run] with the emission window, divided by dt_run.
+      An endpoint alone has zero duration and contributes no charge.
+    - `V_gap` and `E_surface` are accepted for interface consistency but
+      are not used by this emitter.
     """
     def emitter(
         t_run: float,
         V_gap: float = 0.0,
-        dt_run: float = 0.0,
+        dt_run: Optional[float] = None,
         E_surface: float | None = None,
     ) -> float:
+        if dt_run is not None and dt_run > 0.0:
+            start = max(t_run, t_start)
+            end = t_run + dt_run
+            if t_end is not None:
+                end = min(end, t_end)
+            return J_const * (max(0.0, end - start) / dt_run)
+
         # Before the emission window: no emission
         if t_run < t_start:
             return 0.0
