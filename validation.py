@@ -254,7 +254,7 @@ def _validate_emission(errors: list[str], cfg: SimulationConfig) -> None:
             errors.append(f"emission.{prefix}_mg_f_clip values must satisfy 0 < min < max < 1")
         _append_int_at_least(errors, f"emission.{prefix}_emission_k_ph", getattr(emission, f"{prefix}_emission_k_ph"), 1)
         _append_int_at_least(errors, f"emission.{prefix}_emission_eps_points", getattr(emission, f"{prefix}_emission_eps_points"), 1)
-        _append_int_at_least(errors, f"emission.{prefix}_emission_wt_points", getattr(emission, f"{prefix}_emission_wt_points"), 1)
+        _append_int_at_least(errors, f"emission.{prefix}_emission_wt_points", getattr(emission, f"{prefix}_emission_wt_points"), 2)
 
 
 def _validate_circuit(errors: list[str], cfg: SimulationConfig) -> None:
