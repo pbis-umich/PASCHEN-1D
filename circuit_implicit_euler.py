@@ -81,6 +81,8 @@ def step_circuit_implicit_euler(
     Implicit-Euler analog of `circuit.step_circuit(...)` for external-circuit
     state variables.
 
+    `t` is the new step endpoint; previous states are at `t - dt`.
+
     Return order:
         (V_gap_new, I_discharge, V_d_new, V_n_new, V_Cs_new, I_s_new, I_Lp_new)
     """
@@ -92,7 +94,6 @@ def step_circuit_implicit_euler(
     Phi = I_transport * L / (A * e)
     alpha_d, beta_d = _dielectric_coeffs(l, eps_r, L)
     Vs_now = float(V_app_func(t))
-    Vs_next = float(V_app_func(t + dt))
 
     dV_d = dt * beta_d * Phi
     V_d_new = float(V_d_prev + dV_d)
@@ -140,7 +141,8 @@ def step_circuit_implicit_euler(
     if circuit_type == "dielectric_plasma":
         if l <= 0.0:
             raise ValueError("dielectric_plasma requires l > 0.")
-        V_gap_new = V_gap_prev + (Vs_next - Vs_now - dV_d) / alpha_d
+        Vs_prev = float(V_app_func(t - dt))
+        V_gap_new = V_gap_prev + (Vs_now - Vs_prev - dV_d) / alpha_d
         return V_gap_new, i_dis(V_gap_new), V_d_new, None, None, None, None
 
     # ------------------------------------------------------------------
