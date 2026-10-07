@@ -939,7 +939,7 @@ def compute_drift_cfl(
     """
     a_e = np.abs(mu_e * E)
     a_i = np.abs(mu_i * E)
-    a_max = max(float(np.max(a_e)), float(np.max(a_i)))
+    a_max = float(np.maximum(np.max(a_e), np.max(a_i)))
     return float(a_max * dt / dx)
 
 
@@ -970,7 +970,7 @@ def compute_diffusion_cfl(
     D_i_arr = np.asarray(D_i)
     D_e_abs = np.abs(D_e_arr)
     D_i_abs = np.abs(D_i_arr)
-    D_max = max(float(np.max(D_e_abs)), float(np.max(D_i_abs)))
+    D_max = float(np.maximum(np.max(D_e_abs), np.max(D_i_abs)))
     return float(D_max * dt / (dx * dx))
 
 

@@ -455,9 +455,11 @@ if NUMBA_AVAILABLE:
         Nx = E.shape[0]
         for i in range(Nx):
             a_e = abs(mu_e[i] * E[i])
+            a_i = abs(mu_i[i] * E[i])
+            if np.isnan(a_e) or np.isnan(a_i):
+                return np.nan
             if a_e > a_max:
                 a_max = a_e
-            a_i = abs(mu_i[i] * E[i])
             if a_i > a_max:
                 a_max = a_i
         return a_max * dt / dx
@@ -474,9 +476,11 @@ if NUMBA_AVAILABLE:
         Nx = D_e.shape[0]
         for i in range(Nx):
             D_e_abs = abs(D_e[i])
+            D_i_abs = abs(D_i[i])
+            if np.isnan(D_e_abs) or np.isnan(D_i_abs):
+                return np.nan
             if D_e_abs > D_max:
                 D_max = D_e_abs
-            D_i_abs = abs(D_i[i])
             if D_i_abs > D_max:
                 D_max = D_i_abs
         return D_max * dt / (dx * dx)
