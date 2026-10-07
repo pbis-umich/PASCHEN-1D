@@ -1163,6 +1163,7 @@ def run_simulation(cfg: SimulationConfig) -> SimulationState:
         max_substep_diffusion_cfl_step = 0.0
         picard_iters_macro_max = 0
         for sub_idx in range(n_sub):
+            t_sub_start = t_macro_start + sub_idx * dt_sub
             t_next = t_macro_start + (sub_idx + 1) * dt_sub
 
             mu_i_row[:] = build_ion_mobility_profile(
@@ -1195,11 +1196,11 @@ def run_simulation(cfg: SimulationConfig) -> SimulationState:
             Gamma_i_row[:] = -D_i_row * grad_i + ni_curr * u_i_row
             Gamma_e_row[:] = -D_e_row * grad_e - ne_curr * u_e_row
 
-            # External emission contributions at this substep.
+            # External emission averages cover [t_sub_start, t_next].
             if emission_model is not None:
                 J_emit_anode = (
                     emission_model.current_density(
-                        t=t_next,
+                        t=t_sub_start,
                         V_gap=V_gap_local,
                         dt=dt_sub,
                         E_surface=float(E_curr[0]),
@@ -1210,7 +1211,7 @@ def run_simulation(cfg: SimulationConfig) -> SimulationState:
                 )
                 J_emit_cathode = (
                     emission_model.current_density(
-                        t=t_next,
+                        t=t_sub_start,
                         V_gap=V_gap_local,
                         dt=dt_sub,
                         E_surface=float(E_curr[-1]),
