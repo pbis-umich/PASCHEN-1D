@@ -18,7 +18,7 @@ import numpy as np
 
 import diagnostics_plotting as _plotting
 from physical_constants import e
-from derived_diagnostics import compute_sheath_diagnostics
+from derived_diagnostics import _v_app_from_metadata, compute_sheath_diagnostics
 
 
 TEMPORAL_FILES = {
@@ -263,6 +263,8 @@ def reconstruct_v_app(ctx: RunContext, t: np.ndarray) -> np.ndarray:
         return float(meta["V_dc"]) + float(meta["V_peak"]) * np.sin(
             omega * t + float(meta["phi_rf"])
         )
+    if waveform_type in ("table", "tabulated", "measured_table"):
+        return _v_app_from_metadata(t, meta, project_dir=ctx.project_dir)
     raise ValueError(f"Unknown waveform_type: {waveform_type}")
 
 

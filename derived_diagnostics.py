@@ -12,12 +12,14 @@ from dataclasses import dataclass
 import csv
 import json
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Literal
 
 import matplotlib.pyplot as plt
 import numpy as np
 
 from physical_constants import e
+from physics import make_voltage_waveform
 
 
 def _trapezoid_integral(y, *, x=None, axis=-1):
@@ -119,7 +121,9 @@ def load_run_metadata(run_name: str) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def _v_app_from_metadata(time: np.ndarray, meta: dict) -> np.ndarray:
+def _v_app_from_metadata(
+    time: np.ndarray, meta: dict, *, project_dir: str | Path = "."
+) -> np.ndarray:
     """Reconstruct the applied-voltage waveform from saved metadata on a given time array."""
     waveform_type = meta["waveform_type"]
     if waveform_type == "dc":
@@ -134,6 +138,10 @@ def _v_app_from_metadata(time: np.ndarray, meta: dict) -> np.ndarray:
     if waveform_type == "rf":
         omega = 2.0 * np.pi * meta["f_rf"]
         return meta["V_dc"] + meta["V_peak"] * np.sin(omega * time + meta["phi_rf"])
+    if waveform_type in ("table", "tabulated", "measured_table"):
+        waveform = SimpleNamespace(**meta)
+        waveform.table_path = Path(project_dir) / meta["table_path"]
+        return make_voltage_waveform(SimpleNamespace(waveform=waveform))(time)
     raise ValueError(f"Unknown waveform_type in metadata: {waveform_type}")
 
 
