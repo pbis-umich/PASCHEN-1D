@@ -447,11 +447,23 @@ def step_circuit_mna(
     else:
         I_Lp_new = 0.0
 
+    I_Cp = C_p * (V_n_new - _require_state("V_n_prev", V_n_prev)) / dt if finite_capacitance(C_p) else 0.0
     if "Ls" in branch_current_indices:
         I_s_new = float(sol[branch_current_indices["Ls"]])
+    elif _is_zero(L_p) and finite_resistance(R0):
+        I_s_new = (Vs - Va_new) / R0
+    elif _is_zero(L_p) and finite_capacitance(C_s):
+        I_s_new = C_s * (V_Cs_new - _require_state("V_Cs_prev", V_Cs_prev)) / dt
+    elif _is_zero(L_p) and (_is_zero(C_s) or _is_inf(R0) or _is_inf(L_s)):
+        I_s_new = 0.0
     else:
-        I_Cp = C_p * (V_n_new - _require_state("V_n_prev", V_n_prev)) / dt if finite_capacitance(C_p) else 0.0
         I_s_new = I_Cp + I_Lp_new + I_load
+
+    if _is_zero(L_p) and not (_is_zero(R0) and _is_inf(C_s) and _is_zero(L_s)):
+        # Node merging removes the short's current unknown. Recover it by KCL.
+        # Parallel ideal source/shunt shorts have an undetermined split; retain
+        # the existing I_Lp = 0 convention for that degenerate case.
+        I_Lp_new = I_s_new - I_Cp - I_load
 
     return (
         float(V_gap_new),
