@@ -701,7 +701,7 @@ def compute_sheath_rows(
 ):
     """Compute derived sheath rows using the public postprocess implementation."""
     return compute_sheath_diagnostics(
-        ctx.run_name,
+        str(ctx.run_dir),
         quasineutrality_tol=quasineutrality_tol,
         density_floor_fraction=density_floor_fraction,
         density_floor_m3=density_floor_m3,
