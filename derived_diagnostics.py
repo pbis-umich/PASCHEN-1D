@@ -806,6 +806,7 @@ def run_sheath_diagnostics_report(
 def replot_from_saved(
     run_name: str,
     *,
+    project_dir: str | Path = ".",
     temporal_groups: tuple[tuple[TemporalQuantity, ...], ...] | None = None,
     spatial_groups: tuple[tuple[SpatialQuantity, ...], ...] | None = None,
     averaged_spatial_groups: tuple[tuple[SpatialQuantity, ...], ...] | None = None,
@@ -822,13 +823,17 @@ def replot_from_saved(
     valid_nsave: int | None = None,
 ) -> None:
     """
-    Regenerate diagnostics from saved files in <run_name>/.
+    Regenerate diagnostics from saved files in ``run_name``.
+
+    Relative run names and waveform table paths are resolved from
+    ``project_dir``, which defaults to the current working directory. Absolute
+    run paths are used directly; nested run names do not change the table base.
 
     This function can be called repeatedly with different style/units/scales
     without rerunning simulation.
     """
-    run_dir = Path(run_name)
-    meta = load_run_metadata(run_name)
+    run_dir = Path(project_dir) / run_name
+    meta = load_run_metadata(str(run_dir))
 
     Nt = int(meta["Nt"])
     Nx = int(meta["Nx"])
@@ -875,7 +880,7 @@ def replot_from_saved(
     mask_full = (time >= tw0) & (time <= tw1)
 
     temporal_values = {
-        "V_app": _v_app_from_metadata(time, meta),
+        "V_app": _v_app_from_metadata(time, meta, project_dir=project_dir),
         "V_gap": np.asarray(_read_time_series(run_dir, "Vgap_mm.dat", Nt), dtype=np.float64)[:Nt_valid],
         "I_discharge": np.asarray(
             _read_time_series(run_dir, "Idischarge_mm.dat", Nt), dtype=np.float64
