@@ -385,7 +385,14 @@ def validate_simulation_config(cfg: SimulationConfig) -> None:
 
     empirical_gases = {"argon", "nitrogen"}
     gas_key = str(cfg.plasma_state.gas).strip().lower()
-    if cfg.plasma.electron_kinetics_model == "user_defined_electron_kinetics" and gas_key not in empirical_gases:
+    uses_empirical_electron_transport = (
+        cfg.plasma.electron_kinetics_model == "user_defined_electron_kinetics"
+        or (
+            cfg.plasma.electron_kinetics_model == "local_field_approximation"
+            and cfg.local_field_approximation.electron_transport_source == "user_defined_equation"
+        )
+    )
+    if uses_empirical_electron_transport and gas_key not in empirical_gases:
         errors.append("user-defined electron transport is implemented only for argon and nitrogen")
     uses_electron_transport_table = (
         cfg.plasma.electron_kinetics_model == "local_field_approximation"
