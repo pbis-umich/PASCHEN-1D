@@ -211,7 +211,7 @@ def step_circuit_implicit_euler(
             [
                 Vs_now / R0,
                 V_Cs_prev,
-                -I_transport - (C_p / dt) * V_n_prev + (C_gap / dt) * V_gap_prev,
+                I_transport - (C_p / dt) * V_n_prev - (C_gap / dt) * V_gap_prev,
                 V_n_prev - alpha_d * V_gap_prev + dV_d,
             ],
             dtype=np.float64,
@@ -240,7 +240,7 @@ def step_circuit_implicit_euler(
                 Vs_now / R0,
                 V_Cs_prev,
                 V_d_new / R_m + I_transport - (C_gap / dt) * V_gap_prev,
-                -I_transport - (C_p / dt) * V_n_prev + (C_gap / dt) * V_gap_prev,
+                I_transport - (C_p / dt) * V_n_prev - (C_gap / dt) * V_gap_prev,
             ],
             dtype=np.float64,
         )
@@ -267,7 +267,7 @@ def step_circuit_implicit_euler(
             [
                 I_s_prev + (dt / L_s) * Vs_now,
                 V_Cs_prev,
-                -I_transport - (C_p / dt) * V_n_prev + (C_gap / dt) * V_gap_prev,
+                I_transport - (C_p / dt) * V_n_prev - (C_gap / dt) * V_gap_prev,
                 V_n_prev - alpha_d * V_gap_prev + dV_d,
             ],
             dtype=np.float64,
@@ -296,7 +296,7 @@ def step_circuit_implicit_euler(
                 I_s_prev + (dt / L_s) * Vs_now,
                 V_Cs_prev,
                 V_d_new / R_m + I_transport - (C_gap / dt) * V_gap_prev,
-                -I_transport - (C_p / dt) * V_n_prev + (C_gap / dt) * V_gap_prev,
+                I_transport - (C_p / dt) * V_n_prev - (C_gap / dt) * V_gap_prev,
             ],
             dtype=np.float64,
         )
@@ -325,7 +325,7 @@ def step_circuit_implicit_euler(
                 I_s_prev + (dt / L_s) * Vs_now,
                 V_Cs_prev,
                 I_Lp_prev,
-                -I_transport - (C_p / dt) * V_n_prev + (C_gap / dt) * V_gap_prev,
+                I_transport - (C_p / dt) * V_n_prev - (C_gap / dt) * V_gap_prev,
                 V_n_prev - alpha_d * V_gap_prev + dV_d,
             ],
             dtype=np.float64,
